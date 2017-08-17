@@ -6,6 +6,9 @@ import { ImagePicker } from 'expo';
 /**--- Core ---**/
 import { COLORS } from 'App/Core/colors';
 
+/**--- Translations ---**/
+import { translate } from 'App/Translations';
+
 /**--- Components ---**/
 import Button from 'App/Components/Button';
 import SecondaryAction from 'App/Components/SecondaryAction';
@@ -49,7 +52,7 @@ export default class ActionRow extends PureComponent {
                     loading={this.props.loading}
                     onPress={() => this.pickImage()}
                 >
-                    Pick Image
+                    {translate('Pick_Image')}
                 </Button>
     			</View>
     			<View style={styles.secondaryActionWrap}>

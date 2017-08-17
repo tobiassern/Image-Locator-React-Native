@@ -6,6 +6,9 @@ import { Ionicons } from '@expo/vector-icons';
 /**--- Core ---**/
 import { COLORS } from 'App/Core/colors';
 
+/**--- Translations ---**/
+import { translate } from 'App/Translations';
+
 /**--- Components ---**/
 import Text from 'App/Components/Text';
 
@@ -59,7 +62,7 @@ export default class NoMapView extends PureComponent {
 				>
 					<Ionicons name="ios-aperture-outline" size={80} color={COLORS.PRIMARY_TEXT_COLOR} />
 				</Animated.View>
-				<Text style={styles.noMapViewText}>Find the location of an image by pressing the "Pick Image" button</Text>
+				<Text style={styles.noMapViewText}>{translate('Find_location')}</Text>
 			</Animated.View>
 		);
 	};

@@ -1,9 +1,14 @@
 /**--- Node Modules ---**/
 import React, { Component } from 'react';
 import { StyleSheet, View, Modal, Image, TouchableOpacity, Dimensions, Animated, Easing } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 /**--- Core ---**/
 import { CONSTANTS } from 'App/Core/constants';
+import { COLORS } from 'App/Core/colors';
+
+/**--- Translations ---**/
+import { translate } from 'App/Translations';
 
 /**--- Components ---**/
 import Text from 'App/Components/Text';
@@ -18,17 +23,28 @@ export default class MarkerInfoModal extends Component {
 		super(props);
 		this.animateImage = new Animated.Value(0);
 		this.animateInfo = new Animated.Value(0);
+		this.imageInitialWidth = '100%';
+		this.imageInitialHeight = '100%';
 	}
 
 	componentWillReceiveProps({modalMarker}) {
 		if(modalMarker && this.props.modalMarker !== modalMarker) {
 			this.animateImageInitiate(1);
+			this.imageInitialWidth = this.getPercentDifference(modalMarker.measure.height / modalMarker.measure.width);
+			this.imageInitialHeight = this.getPercentDifference(modalMarker.measure.width / modalMarker.measure.height);
 		}
 		if(!modalMarker) {
 			this.animateImage = new Animated.Value(0);
 		}
 	}
 
+	getPercentDifference(diff) {
+		if(diff > 1) {
+			return `${diff*100}%`
+		} else {
+			return '100%';
+		}
+	}
 	animateImageInitiate(value) {
 		Animated.timing(
 			this.animateImage,
@@ -44,7 +60,7 @@ export default class MarkerInfoModal extends Component {
 			this.animateInfo,
 			{
 				toValue: value,
-				duration: 1000,
+				duration: 0,
 				delay: CONSTANTS.MARKER_MODAL_IMAGE_ANIMATION_DURATION,
 				easing: Easing.bounce
 			}).start();
@@ -59,13 +75,30 @@ export default class MarkerInfoModal extends Component {
 
 	renderInnerModal() {
 		return (
-			<TouchableOpacity
-				style={styles.markerInfoModal}
-				onPress={() => this.closeModal()}
+			<Animated.View
+				style={{
+					flex: 1,
+					backgroundColor: this.animateImage.interpolate({
+						inputRange: [0, 1],
+						outputRange: ['transparent', COLORS.MARKER_MODAL_BACKGROUND]
+					})
+				}}
 			>
+				<TouchableOpacity
+					style={{marginTop: 20, zIndex: 100, alignSelf: 'flex-start', height: 44, width: 44, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent'}}
+					onPress={() => this.closeModal()}
+				>
+					<View style={{width: 34, height: 34, borderRadius: 34, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', paddingTop: 2}}>
+					<Ionicons name="ios-close-outline" size={39} color="#ffffff" />
+					</View>
+				</TouchableOpacity>
+
 				<Animated.View
 					style={{
 						position: 'absolute',
+						justifyContent: 'center',
+						alignItems: 'center',
+						overflow: 'hidden',
 						width: this.animateImage.interpolate({
 							inputRange: [0, 1],
 							outputRange: [CONSTANTS.MARKER_CIRCLE_SIZE - CONSTANTS.MARKER_CIRCLE_PADDING, deviceWidth]
@@ -78,7 +111,6 @@ export default class MarkerInfoModal extends Component {
 							inputRange: [0, 1],
 							outputRange: [CONSTANTS.MARKER_CIRCLE_SIZE - CONSTANTS.MARKER_CIRCLE_PADDING, 0]
 						}),
-						overflow: 'hidden',
 						left: this.animateImage.interpolate({
 							inputRange: [0, 1],
 							outputRange: [this.props.modalMarker.measure.px + 5, 0]
@@ -89,8 +121,21 @@ export default class MarkerInfoModal extends Component {
 						}),
 					}}
 				>
-					<Image
-						style={styles.modalImage}
+					<Animated.Image
+						style={
+							{
+								position: 'absolute',
+								width: this.animateImage.interpolate({
+									inputRange: [0, 1],
+									outputRange: [this.imageInitialWidth, '100%']
+								}),
+								height: this.animateImage.interpolate({
+									inputRange: [0, 1],
+									outputRange: [this.imageInitialHeight, '100%']
+								}),
+								resizeMode: 'contain'
+							}
+						}
 						source={{uri: this.props.modalMarker.image}}
 					/>
 				</Animated.View>
@@ -107,11 +152,11 @@ export default class MarkerInfoModal extends Component {
 						style={styles.modalInfo}
 					>
 						<Text>
-							Date: {this.props.modalMarker.exif.DateTimeOriginal}
+							{translate('Date')}: {this.props.modalMarker.exif.DateTimeOriginal}
 						</Text>
 					</View>
 				</View>
-			</TouchableOpacity>
+			</Animated.View>
 		);
 	}
 
@@ -128,16 +173,6 @@ export default class MarkerInfoModal extends Component {
 }
 
 const styles = StyleSheet.create({
-	markerInfoModal: {
-		flex: 1,
-		width: deviceWidth,
-		height: deviceHeight
-	},
-	modalImage: {
-		width: '100%',
-		height: '100%',
-		resizeMode: 'cover'
-	},
 	modalInfo: {
 		backgroundColor: '#ffffff',
 		padding: 20,

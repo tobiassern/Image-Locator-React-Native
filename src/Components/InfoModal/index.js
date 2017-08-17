@@ -4,6 +4,10 @@ import { StyleSheet, View, Modal, TouchableOpacity } from 'react-native';
 
 /**--- Core ---**/
 import { COLORS } from 'App/Core/colors';
+
+/**--- Translations ---**/
+import { translate } from 'App/Translations';
+
 /**--- Components ---**/
 import Text from 'App/Components/Text';
 
@@ -23,14 +27,14 @@ export default class InfoModal extends Component {
                     <View style={{flex: 0.25, height: 10}}>
                     </View>
                     <View style={{flex: 0.5, alignItems: 'center'}}>
-                        <Text style={{fontSize: 20}}>Information</Text>
+                        <Text style={{fontSize: 20}}>{translate('Information')}</Text>
                     </View>
                     <View style={{flex: 0.25, alignItems: 'flex-end'}}>
             			<TouchableOpacity
             				onPress={() => this.props.closeInfoModal()}
                             style={styles.infoModalHeaderClose}
             			>
-            				<Text style={{fontSize: 18}}>Close</Text>
+            				<Text style={{fontSize: 18}}>{translate('Close')}</Text>
             			</TouchableOpacity>
                     </View>
         		</View>
