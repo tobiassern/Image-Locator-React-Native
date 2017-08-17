@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Image Locator",
+    "description": "An empty new project",
+    "slug": "image-locator",
+    "privacy": "unlisted",
+    "sdkVersion": "19.0.0",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "primaryColor": "#cccccc",
+    "icon": "./assets/icons/app-icon.png",
+    "loading": {
+      "icon": "./assets/icons/loading-icon.png",
+      "hideExponentText": true
+    },
+    "packagerOpts": {
+      "assetExts": ["ttf", "mp4"]
+    },
+    "ios": {
+      "supportsTablet": false
+    },
+    "facebookScheme": "fb116703528988064"
+  }
+}

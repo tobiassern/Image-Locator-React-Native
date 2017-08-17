@@ -1,0 +1,6 @@
+export const COLORS = {
+	APP_BACKGROUND_COLOR: 'whitesmoke',
+	MAIN_COLOR: '#888888',
+	MAIN_COLOR_OPACITY: 'rgba(0,0,0,0.5)',
+	MAP_MARKER_COLOR: '#777777'
+}
