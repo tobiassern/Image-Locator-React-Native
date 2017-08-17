@@ -20,13 +20,13 @@ export default class Button extends PureComponent {
 	}
 
 	componentDidMount() {
-		this.animateSpinnerInitiate();
 		this.animateButtonSize(this.props.loading ? 0 : 1);
 	}
 
 	componentWillReceiveProps({loading}) {
 		if(this.props.loading !== loading && loading) {
 			this.animateButtonSize(0);
+			this.animateSpinnerInitiate();
 		} else if(this.props.loading !== loading && !loading) {
 			this.animateButtonSize(1);
 		}
@@ -50,8 +50,13 @@ export default class Button extends PureComponent {
 			{
 				toValue: 1,
 				duration: 1000,
-				easing: Easing.linear
-			}).start(() => this.animateSpinnerInitiate());
+				easing: Easing.linear,
+				useNativeDriver: true
+			}).start((animation) => {
+				if(animation.finished && this.props.loading) {
+					this.animateSpinnerInitiate();
+				}
+			});
 	}
 
     render() {
@@ -113,7 +118,7 @@ export default class Button extends PureComponent {
 
 const styles = StyleSheet.create({
 	button: {
-		backgroundColor: COLORS.MAIN_COLOR,
+		backgroundColor: COLORS.BUTTON_COLOR,
 		height: 45,
 		borderRadius: 45,
 		paddingHorizontal: 20,

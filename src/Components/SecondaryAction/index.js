@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         width: 45,
         height: 45,
         borderRadius: 45,
-        backgroundColor: COLORS.MAIN_COLOR_OPACITY,
+        backgroundColor: COLORS.SECONDARY_ACTION_COLOR,
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: 2

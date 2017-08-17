@@ -118,7 +118,7 @@ export default class MarkerInfoModal extends Component {
     render() {
         return (
         	<Modal
-        		visible={this.props.modalMarker}
+        		visible={this.props.modalMarker ? true : false}
         		transparent={true}
         	>
         		{this.props.modalMarker && this.renderInnerModal()}

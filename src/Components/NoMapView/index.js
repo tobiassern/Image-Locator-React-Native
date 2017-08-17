@@ -1,7 +1,10 @@
 /**--- Node Modules ---**/
 import React, { PureComponent } from 'react';
-import { StyleSheet, View, Dimensions, Animated } from 'react-native';
+import { StyleSheet, View, Dimensions, Animated, Easing } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+
+/**--- Core ---**/
+import { COLORS } from 'App/Core/colors';
 
 /**--- Components ---**/
 import Text from 'App/Components/Text';
@@ -22,7 +25,9 @@ export default class NoMapView extends PureComponent {
 			this.animateNoMapView,
 			{
 				toValue: 1,
-				duration: 1000
+				duration: 750,
+				easing: Easing.easeIn,
+				useNativeDriver: true
 			}
 		).start();
 	}
@@ -32,15 +37,28 @@ export default class NoMapView extends PureComponent {
 				style={[
 					styles.noMapView,
 					{
-						top: this.animateNoMapView.interpolate({
-							inputRange: [0, 1],
-							outputRange: [-50, 0]
-						}),
+						transform: [{
+							translateY: this.animateNoMapView.interpolate({
+								inputRange: [0, 1],
+								outputRange: [-50, 0]
+							}),
+						}],
 						opacity: this.animateNoMapView
 					}
 				]}
 			>
-				<Ionicons name="ios-aperture-outline" size={80} color="black" />
+				<Animated.View
+					style={{
+						transform: [{
+							translateY: this.animateNoMapView.interpolate({
+								inputRange: [.25, 1],
+								outputRange: [-25, 0]
+							}),
+						}],
+					}}
+				>
+					<Ionicons name="ios-aperture-outline" size={80} color={COLORS.PRIMARY_TEXT_COLOR} />
+				</Animated.View>
 				<Text style={styles.noMapViewText}>Find the location of an image by pressing the "Pick Image" button</Text>
 			</Animated.View>
 		);

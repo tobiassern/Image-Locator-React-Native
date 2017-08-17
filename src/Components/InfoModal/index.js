@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Modal, TouchableOpacity } from 'react-native';
 
+/**--- Core ---**/
+import { COLORS } from 'App/Core/colors';
 /**--- Components ---**/
 import Text from 'App/Components/Text';
 
@@ -18,12 +20,19 @@ export default class InfoModal extends Component {
         		animationType={"slide"}
         	>
         		<View style={styles.infoModalHeader}>
-        			<TouchableOpacity
-        				onPress={() => this.props.closeInfoModal()}
-                        style={styles.infoModalHeaderClose}
-        			>
-        				<Text style={{fontSize: 18}}>Close</Text>
-        			</TouchableOpacity>
+                    <View style={{flex: 0.25, height: 10}}>
+                    </View>
+                    <View style={{flex: 0.5, alignItems: 'center'}}>
+                        <Text style={{fontSize: 20}}>Information</Text>
+                    </View>
+                    <View style={{flex: 0.25, alignItems: 'flex-end'}}>
+            			<TouchableOpacity
+            				onPress={() => this.props.closeInfoModal()}
+                            style={styles.infoModalHeaderClose}
+            			>
+            				<Text style={{fontSize: 18}}>Close</Text>
+            			</TouchableOpacity>
+                    </View>
         		</View>
         	</Modal>
         );
@@ -35,10 +44,10 @@ const styles = StyleSheet.create({
 
 	},
 	infoModalHeader: {
-		height: 64,
-		paddingTop: 20,
+        backgroundColor: COLORS.MAIN_COLOR,
+        height: 44,
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         alignItems: 'center'
 	},
     infoModalHeaderClose: {

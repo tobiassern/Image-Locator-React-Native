@@ -13,7 +13,6 @@ import SecondaryAction from 'App/Components/SecondaryAction';
 export default class ActionRow extends PureComponent {
 
     async pickImage() {
-        this.props.setLoading(true);
 
         let result = await ImagePicker.launchImageLibraryAsync({exif: true});
 
@@ -22,6 +21,7 @@ export default class ActionRow extends PureComponent {
                 this.props.setLoading(false);
                 alert("We could not detect the position for this image");
             } else {
+                this.props.setLoading(true);
                 this.props.addMarker(
                     {
                         coordinate: {
@@ -33,8 +33,6 @@ export default class ActionRow extends PureComponent {
                     }
                 );
             }
-        } else {
-            this.props.setLoading(false);
         }
 
     }
