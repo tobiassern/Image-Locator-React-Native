@@ -32,7 +32,7 @@ export default class NoMapView extends PureComponent {
         		style={[
         			styles.noMapView,
         			{
-        				top: this.animatedNoMapView.interpolate({
+        				top: this.animateNoMapView.interpolate({
         					inputRange: [0, 1],
         					outputRange: [-50, 0]
         				}),

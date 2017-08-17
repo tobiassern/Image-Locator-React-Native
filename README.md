@@ -12,9 +12,9 @@ Built this in order to learn more about animation in React Native and also built
 
 Provide code examples and explanations of how to get the project.
 
-## Contributors
+## Dependencies
 
-Let people know how they can dive into the project, include important links to things like issue trackers, irc, twitter accounts if applicable.
+The only dependencies used are [React](https://facebook.github.io/react/), [React Native](https://facebook.github.io/react-native/) and [Expo](https://expo.io/).
 
 ## License
 
