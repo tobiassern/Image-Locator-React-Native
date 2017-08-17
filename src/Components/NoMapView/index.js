@@ -22,29 +22,29 @@ export default class NoMapView extends PureComponent {
 			this.animateNoMapView,
 			{
 				toValue: 1,
-				duration: 500
+				duration: 1000
 			}
 		).start();
 	}
-    render() {
-        return (
-        	<Animated.View
-        		style={[
-        			styles.noMapView,
-        			{
-        				top: this.animateNoMapView.interpolate({
-        					inputRange: [0, 1],
-        					outputRange: [-50, 0]
-        				}),
-        				opacity: this.animateNoMapView
-        			}
-    			]}
-        	>
-        		<Ionicons name="ios-aperture-outline" size={80} color="black" />
-        		<Text style={styles.noMapViewText}>Find the location of an image by pressing the "Pick Image" button</Text>
-        	</Animated.View>
-        );
-    };
+	render() {
+		return (
+			<Animated.View
+				style={[
+					styles.noMapView,
+					{
+						top: this.animateNoMapView.interpolate({
+							inputRange: [0, 1],
+							outputRange: [-50, 0]
+						}),
+						opacity: this.animateNoMapView
+					}
+				]}
+			>
+				<Ionicons name="ios-aperture-outline" size={80} color="black" />
+				<Text style={styles.noMapViewText}>Find the location of an image by pressing the "Pick Image" button</Text>
+			</Animated.View>
+		);
+	};
 }
 
 const styles = StyleSheet.create({
