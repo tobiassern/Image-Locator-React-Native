@@ -101,22 +101,27 @@ export default class MarkerInfoModal extends Component {
 			return '100%';
 		}
 	}
-	animateModalInitiate(value) {
+	animateModalInitiate(value, duration = CONSTANTS.MARKER_MODAL_DURATION) {
 		Animated.timing(
 			this.animateModal,
 			{
 				toValue: value,
-				duration: CONSTANTS.MARKER_MODAL_DURATION,
+				duration: duration,
 				easing: Easing.ease
 			}).start();
 	}
 
 
 	closeModal() {
-		this.animateModalInitiate(MAX_ANIM_VALUE);
-		setTimeout(() => {
+		if(this.animateModal._value <= 1) {
+			this.animateModalInitiate(MAX_ANIM_VALUE, 0);
 			this.props.closeModal();
-		}, this.animateModal._value <= 1 ? 0 : CONSTANTS.MARKER_MODAL_DURATION);
+		} else {
+			this.animateModalInitiate(MAX_ANIM_VALUE);
+			setTimeout(() => {
+				this.props.closeModal();
+			}, CONSTANTS.MARKER_MODAL_DURATION);
+		}
 	}
 
 	renderInnerModal() {
