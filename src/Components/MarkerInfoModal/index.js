@@ -82,8 +82,8 @@ export default class MarkerInfoModal extends Component {
 	componentWillReceiveProps({modalMarker}) {
 		if(modalMarker && this.props.modalMarker !== modalMarker) {
 			this.animateModalInitiate(1);
-			this.imageInitialWidth = this.getPercentDifference(modalMarker.measure.width / modalMarker.measure.height);
-			this.imageInitialHeight = this.getPercentDifference(modalMarker.measure.height / modalMarker.measure.width);
+			this.imageInitialWidth = this.getPercentDifference(modalMarker.measure.height / modalMarker.measure.width);
+			this.imageInitialHeight = this.getPercentDifference(modalMarker.measure.width / modalMarker.measure.height);
 		}
 		if(!modalMarker) {
 			this.animateModal = new Animated.Value(MAX_ANIM_VALUE);
@@ -96,8 +96,10 @@ export default class MarkerInfoModal extends Component {
 
 	getPercentDifference(diff) {
 		if(diff > 1) {
+			console.log(`${diff*100}%`);
 			return `${diff*100}%`
 		} else {
+			console.log('100%');
 			return '100%';
 		}
 	}
@@ -113,7 +115,7 @@ export default class MarkerInfoModal extends Component {
 
 
 	closeModal() {
-		if(this.animateModal._value <= 1) {
+		if(this.animateModal._value > MAX_ANIM_VALUE) {
 			this.animateModalInitiate(MAX_ANIM_VALUE, 0);
 			this.props.closeModal();
 		} else {
@@ -162,17 +164,17 @@ export default class MarkerInfoModal extends Component {
 						}),
 						borderRadius: this.animateModal.interpolate({
 							inputRange: [1, MAX_ANIM_VALUE],
-							outputRange: [1, CONSTANTS.MARKER_CIRCLE_SIZE - CONSTANTS.MARKER_CIRCLE_PADDING],
+							outputRange: [0, CONSTANTS.MARKER_CIRCLE_SIZE - CONSTANTS.MARKER_CIRCLE_PADDING],
 							extrapolate: 'clamp'
 						}),
 						left: this.animateModal.interpolate({
 							inputRange: [1, MAX_ANIM_VALUE],
-							outputRange: [1, this.props.modalMarker.measure.px + 5],
+							outputRange: [0, this.props.modalMarker.measure.px + 5],
 							extrapolate: 'clamp'
 						}),
 						top: this.animateModal.interpolate({
 							inputRange: [1, MAX_ANIM_VALUE],
-							outputRange: [1, this.props.modalMarker.measure.py + 5],
+							outputRange: [0, this.props.modalMarker.measure.py + 5],
 							extrapolate: 'clamp'
 						}),
 					}}
