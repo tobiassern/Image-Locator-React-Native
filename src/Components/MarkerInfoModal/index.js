@@ -61,7 +61,7 @@ export default class MarkerInfoModal extends Component {
 				if(gestureState.dy > MAX_ANIM_VALUE / 2) {
 					this.closeModal();
 				} else {
-					this.animateModalInitiate(0);
+					this.animateModalInitiate(1);
 				}
 				// The user has released all touches while this view is the
 				// responder. This typically means a gesture has succeeded
@@ -81,7 +81,7 @@ export default class MarkerInfoModal extends Component {
 
 	componentWillReceiveProps({modalMarker}) {
 		if(modalMarker && this.props.modalMarker !== modalMarker) {
-			this.animateModalInitiate(0);
+			this.animateModalInitiate(1);
 			this.imageInitialWidth = this.getPercentDifference(modalMarker.measure.width / modalMarker.measure.height);
 			this.imageInitialHeight = this.getPercentDifference(modalMarker.measure.height / modalMarker.measure.width);
 		}
@@ -106,7 +106,7 @@ export default class MarkerInfoModal extends Component {
 			this.animateModal,
 			{
 				toValue: value,
-				duration: CONSTANTS.MARKER_MODAL_DURATION,
+				duration: CONSTANTS.MARKER_MODAL_DURATION * ( ( (MAX_ANIM_VALUE - this.animateModal._value =< 0 ? 1 : this.animateModal._value) / MAX_ANIM_VALUE)),
 				easing: Easing.ease
 			}).start();
 	}
@@ -125,7 +125,7 @@ export default class MarkerInfoModal extends Component {
 				style={{
 					flex: 1,
 					backgroundColor: this.animateModal.interpolate({
-						inputRange: [0, MAX_ANIM_VALUE],
+						inputRange: [1, MAX_ANIM_VALUE],
 						outputRange: [COLORS.MARKER_MODAL_BACKGROUND, 'transparent'],
 						extrapolate: 'clamp'
 					})
@@ -146,28 +146,28 @@ export default class MarkerInfoModal extends Component {
 						alignItems: 'center',
 						overflow: 'hidden',
 						width: this.animateModal.interpolate({
-							inputRange: [0, MAX_ANIM_VALUE],
+							inputRange: [1, MAX_ANIM_VALUE],
 							outputRange: [deviceWidth, CONSTANTS.MARKER_CIRCLE_SIZE - CONSTANTS.MARKER_CIRCLE_PADDING],
 							extrapolate: 'clamp'
 						}),
 						height: this.animateModal.interpolate({
-							inputRange: [0, MAX_ANIM_VALUE],
+							inputRange: [1, MAX_ANIM_VALUE],
 							outputRange: [deviceHeight, CONSTANTS.MARKER_CIRCLE_SIZE - CONSTANTS.MARKER_CIRCLE_PADDING],
 							extrapolate: 'clamp'
 						}),
 						borderRadius: this.animateModal.interpolate({
-							inputRange: [0, MAX_ANIM_VALUE],
-							outputRange: [0, CONSTANTS.MARKER_CIRCLE_SIZE - CONSTANTS.MARKER_CIRCLE_PADDING],
+							inputRange: [1, MAX_ANIM_VALUE],
+							outputRange: [1, CONSTANTS.MARKER_CIRCLE_SIZE - CONSTANTS.MARKER_CIRCLE_PADDING],
 							extrapolate: 'clamp'
 						}),
 						left: this.animateModal.interpolate({
-							inputRange: [0, MAX_ANIM_VALUE],
-							outputRange: [0, this.props.modalMarker.measure.px + 5],
+							inputRange: [1, MAX_ANIM_VALUE],
+							outputRange: [1, this.props.modalMarker.measure.px + 5],
 							extrapolate: 'clamp'
 						}),
 						top: this.animateModal.interpolate({
-							inputRange: [0, MAX_ANIM_VALUE],
-							outputRange: [0, this.props.modalMarker.measure.py + 5],
+							inputRange: [1, MAX_ANIM_VALUE],
+							outputRange: [1, this.props.modalMarker.measure.py + 5],
 							extrapolate: 'clamp'
 						}),
 					}}
@@ -177,12 +177,12 @@ export default class MarkerInfoModal extends Component {
 							{
 								position: 'absolute',
 								width: this.animateModal.interpolate({
-									inputRange: [0, MAX_ANIM_VALUE],
+									inputRange: [1, MAX_ANIM_VALUE],
 									outputRange: ['100%', this.imageInitialWidth],
 									extrapolate: 'clamp'
 								}),
 								height: this.animateModal.interpolate({
-									inputRange: [0, MAX_ANIM_VALUE],
+									inputRange: [1, MAX_ANIM_VALUE],
 									outputRange: ['100%', this.imageInitialHeight],
 									extrapolate: 'clamp'
 								}),
