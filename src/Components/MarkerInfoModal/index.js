@@ -102,14 +102,11 @@ export default class MarkerInfoModal extends Component {
 		}
 	}
 	animateModalInitiate(value) {
-
-		let animateModalValue = this.animateModal._value <= 0 ? 1 : this.animateModal._value;
-
 		Animated.timing(
 			this.animateModal,
 			{
 				toValue: value,
-				duration: CONSTANTS.MARKER_MODAL_DURATION * ( ( (MAX_ANIM_VALUE - animateModalValue) / MAX_ANIM_VALUE)),
+				duration: CONSTANTS.MARKER_MODAL_DURATION,
 				easing: Easing.ease
 			}).start();
 	}
@@ -119,7 +116,7 @@ export default class MarkerInfoModal extends Component {
 		this.animateModalInitiate(MAX_ANIM_VALUE);
 		setTimeout(() => {
 			this.props.closeModal();
-		}, CONSTANTS.MARKER_MODAL_DURATION);
+		}, this.animateModal._value <= 1 ? 0 : CONSTANTS.MARKER_MODAL_DURATION);
 	}
 
 	renderInnerModal() {
