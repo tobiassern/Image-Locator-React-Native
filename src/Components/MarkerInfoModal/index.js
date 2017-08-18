@@ -17,13 +17,15 @@ import Text from 'App/Components/Text';
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 
+const MAX_ANIM_VALUE = 100;
+
 // https://mindthecode.com/getting-started-with-the-panresponder-in-react-native/
 
 export default class MarkerInfoModal extends Component {
 
 	constructor(props) {
 		super(props);
-		this.animateModal = new Animated.Value(0);
+		this.animateModal = new Animated.Value(MAX_ANIM_VALUE);
 		this.imageInitialWidth = '100%';
 		this.imageInitialHeight = '100%';
 		this.state = {
@@ -32,55 +34,64 @@ export default class MarkerInfoModal extends Component {
 		this._setState = function(state) {
 			this.setState(state);
 		}
+
+		this.animateModal.addListener(({value}) => {
+			console.log(value);
+		});
 	}
 
 	componentWillMount() {
 		this._panResponder = PanResponder.create({
-		      // Ask to be the responder:
-		      onStartShouldSetPanResponder: (evt, gestureState) => true,
-		      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-		      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-		      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+			// Ask to be the responder:
+			onStartShouldSetPanResponder: (evt, gestureState) => true,
+			onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+			onMoveShouldSetPanResponder: (evt, gestureState) => true,
+			onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
-		      onPanResponderGrant: (evt, gestureState) => {
-		        // The gesture has started. Show visual feedback so the user knows
-		        // what is happening!
-		        console.log("grant");
-		        // gestureState.d{x,y} will be set to zero now
-		      },
-		      onPanResponderMove: (evt, gestureState) => {
-		      	console.log("moving");
-		        // The most recent move distance is gestureState.move{X,Y}
-
-		        // The accumulated gesture distance since becoming responder is
-		        // gestureState.d{x,y}
-		      },
-		      onPanResponderTerminationRequest: (evt, gestureState) => true,
-		      onPanResponderRelease: (evt, gestureState) => {
-		      	console.log("release");
-		        // The user has released all touches while this view is the
-		        // responder. This typically means a gesture has succeeded
-		      },
-		      onPanResponderTerminate: (evt, gestureState) => {
-		        // Another component has become the responder, so this gesture
-		        // should be cancelled
-		      },
-		      onShouldBlockNativeResponder: (evt, gestureState) => {
-		        // Returns whether this component should block native components from becoming the JS
-		        // responder. Returns true by default. Is currently only supported on android.
-		        return true;
-		      },
-		    });
+			onPanResponderGrant: (evt, gestureState) => {
+				// The gesture has started. Show visual feedback so the user knows
+				// what is happening!
+				console.log("grant");
+				// gestureState.d{x,y} will be set to zero now
+			},
+    		onPanResponderMove: (evt, gestureState) => {
+    			console.log("moving");
+    			console.log(gestureState.dy)
+    			Animated.event([null, {dy: this.animateModal}])(evt, gestureState);
+    		},
+			onPanResponderTerminationRequest: (evt, gestureState) => true,
+			onPanResponderRelease: (evt, gestureState) => {
+				console.log("release");
+				if(gestureState.dy > MAX_ANIM_VALUE / 3) {
+					console.log("closing");
+					this.closeModal();
+				} else {
+					console.log("opening");
+					this.animateModalInitiate(0);
+				}
+				// The user has released all touches while this view is the
+				// responder. This typically means a gesture has succeeded
+			},
+			onPanResponderTerminate: (evt, gestureState) => {
+				// Another component has become the responder, so this gesture
+				// should be cancelled
+			},
+			onShouldBlockNativeResponder: (evt, gestureState) => {
+				// Returns whether this component should block native components from becoming the JS
+				// responder. Returns true by default. Is currently only supported on android.
+				return true;
+			},
+	    });
 	}
 
 	componentWillReceiveProps({modalMarker}) {
 		if(modalMarker && this.props.modalMarker !== modalMarker) {
-			this.animateModalInitiate(1);
+			this.animateModalInitiate(0);
 			this.imageInitialWidth = this.getPercentDifference(modalMarker.measure.height / modalMarker.measure.width);
 			this.imageInitialHeight = this.getPercentDifference(modalMarker.measure.width / modalMarker.measure.height);
 		}
 		if(!modalMarker) {
-			this.animateModal = new Animated.Value(0);
+			this.animateModal = new Animated.Value(MAX_ANIM_VALUE);
 		}
 	}
 
@@ -108,7 +119,7 @@ export default class MarkerInfoModal extends Component {
 
 
 	closeModal() {
-		this.animateModalInitiate(0);
+		this.animateModalInitiate(MAX_ANIM_VALUE);
 		setTimeout(() => {
 			this.props.closeModal();
 		}, CONSTANTS.MARKER_MODAL_DURATION);
@@ -120,8 +131,9 @@ export default class MarkerInfoModal extends Component {
 				style={{
 					flex: 1,
 					backgroundColor: this.animateModal.interpolate({
-						inputRange: [0, 1],
-						outputRange: ['transparent', COLORS.MARKER_MODAL_BACKGROUND]
+						inputRange: [0, MAX_ANIM_VALUE],
+						outputRange: [COLORS.MARKER_MODAL_BACKGROUND, 'transparent'],
+						extrapolate: 'clamp'
 					})
 				}}
 			>
@@ -133,19 +145,6 @@ export default class MarkerInfoModal extends Component {
 					<Ionicons name="ios-close-outline" size={39} color="#ffffff" />
 					</View>
 				</TouchableOpacity>
-				<View
-					{...this._panResponder.panHandlers}
-					style={{
-						backgroundColor: 'red',
-						width: 200,
-						height: 200,
-						position: 'absolute',
-						zIndex: 300,
-						left: 100,
-						top: 200
-					}}
-				>
-				</View>
 				<Animated.View
 					style={{
 						position: 'absolute',
@@ -153,24 +152,29 @@ export default class MarkerInfoModal extends Component {
 						alignItems: 'center',
 						overflow: 'hidden',
 						width: this.animateModal.interpolate({
-							inputRange: [0, deviceHeight / 3],
-							outputRange: [CONSTANTS.MARKER_CIRCLE_SIZE - CONSTANTS.MARKER_CIRCLE_PADDING, deviceWidth]
+							inputRange: [0, MAX_ANIM_VALUE],
+							outputRange: [deviceWidth, CONSTANTS.MARKER_CIRCLE_SIZE - CONSTANTS.MARKER_CIRCLE_PADDING],
+							extrapolate: 'clamp'
 						}),
 						height: this.animateModal.interpolate({
-							inputRange: [0, deviceHeight / 3],
-							outputRange: [CONSTANTS.MARKER_CIRCLE_SIZE - CONSTANTS.MARKER_CIRCLE_PADDING, deviceHeight]
+							inputRange: [0, MAX_ANIM_VALUE],
+							outputRange: [deviceHeight, CONSTANTS.MARKER_CIRCLE_SIZE - CONSTANTS.MARKER_CIRCLE_PADDING],
+							extrapolate: 'clamp'
 						}),
 						borderRadius: this.animateModal.interpolate({
-							inputRange: [0, deviceHeight / 3],
-							outputRange: [CONSTANTS.MARKER_CIRCLE_SIZE - CONSTANTS.MARKER_CIRCLE_PADDING, 0]
+							inputRange: [0, MAX_ANIM_VALUE],
+							outputRange: [0, CONSTANTS.MARKER_CIRCLE_SIZE - CONSTANTS.MARKER_CIRCLE_PADDING],
+							extrapolate: 'clamp'
 						}),
 						left: this.animateModal.interpolate({
-							inputRange: [0, deviceHeight / 3],
-							outputRange: [this.props.modalMarker.measure.px + 5, 0]
+							inputRange: [0, MAX_ANIM_VALUE],
+							outputRange: [0, this.props.modalMarker.measure.px + 5],
+							extrapolate: 'clamp'
 						}),
 						top: this.animateModal.interpolate({
-							inputRange: [0, deviceHeight / 3],
-							outputRange: [this.props.modalMarker.measure.py + 5, 0]
+							inputRange: [0, MAX_ANIM_VALUE],
+							outputRange: [0, this.props.modalMarker.measure.py + 5],
+							extrapolate: 'clamp'
 						}),
 					}}
 				>
@@ -179,12 +183,14 @@ export default class MarkerInfoModal extends Component {
 							{
 								position: 'absolute',
 								width: this.animateModal.interpolate({
-									inputRange: [0, deviceHeight / 3],
-									outputRange: [this.imageInitialWidth, '100%']
+									inputRange: [0, MAX_ANIM_VALUE],
+									outputRange: ['100%', this.imageInitialWidth],
+									extrapolate: 'clamp'
 								}),
 								height: this.animateModal.interpolate({
-									inputRange: [0, deviceHeight / 3],
-									outputRange: [this.imageInitialHeight, '100%']
+									inputRange: [0, MAX_ANIM_VALUE],
+									outputRange: ['100%', this.imageInitialHeight],
+									extrapolate: 'clamp'
 								}),
 								resizeMode: 'contain'
 							}
@@ -218,8 +224,14 @@ export default class MarkerInfoModal extends Component {
         	<Modal
         		visible={this.props.modalMarker ? true : false}
         		transparent={true}
+
         	>
+        		<View
+        			{...this._panResponder.panHandlers}
+        			style={{flex: 1}}
+        		>
         		{this.props.modalMarker && this.renderInnerModal()}
+        		</View>
         	</Modal>
         );
     };
