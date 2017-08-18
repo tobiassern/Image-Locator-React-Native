@@ -44,10 +44,9 @@ export default class MarkerInfoModal extends Component {
 		this._panResponder = PanResponder.create({
 			// Ask to be the responder:
 			onStartShouldSetPanResponder: (evt, gestureState) => true,
-			onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-			onMoveShouldSetPanResponder: (evt, gestureState) => true,
-			onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-
+			onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
+			onMoveShouldSetPanResponder: (evt, gestureState) => Math.abs(gestureState.dy) > 5,
+			onMoveShouldSetPanResponderCapture: (evt, gestureState) => Math.abs(gestureState.dy) > 5,
 			onPanResponderGrant: (evt, gestureState) => {
 				// The gesture has started. Show visual feedback so the user knows
 				// what is happening!
@@ -55,7 +54,6 @@ export default class MarkerInfoModal extends Component {
 				// gestureState.d{x,y} will be set to zero now
 			},
     		onPanResponderMove: (evt, gestureState) => {
-    			console.log("moving");
     			console.log(gestureState.dy)
     			Animated.event([null, {dy: this.animateModal}])(evt, gestureState);
     		},
@@ -75,11 +73,12 @@ export default class MarkerInfoModal extends Component {
 			onPanResponderTerminate: (evt, gestureState) => {
 				// Another component has become the responder, so this gesture
 				// should be cancelled
+				return true;
 			},
 			onShouldBlockNativeResponder: (evt, gestureState) => {
 				// Returns whether this component should block native components from becoming the JS
 				// responder. Returns true by default. Is currently only supported on android.
-				return true;
+				return false;
 			},
 	    });
 	}
@@ -107,7 +106,6 @@ export default class MarkerInfoModal extends Component {
 		}
 	}
 	animateModalInitiate(value) {
-		value = value === 1 ? deviceHeight / 3 : 0;
 		Animated.timing(
 			this.animateModal,
 			{
@@ -138,7 +136,7 @@ export default class MarkerInfoModal extends Component {
 				}}
 			>
 				<TouchableOpacity
-					style={{marginTop: 20, zIndex: 100, alignSelf: 'flex-start', height: 44, width: 44, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent'}}
+					style={{position: 'absolute', top: 20, left: 0, zIndex: 200, alignSelf: 'flex-start', height: 44, width: 44, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent'}}
 					onPress={() => this.closeModal()}
 				>
 					<View style={{width: 34, height: 34, borderRadius: 34, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', paddingTop: 2}}>
@@ -224,7 +222,6 @@ export default class MarkerInfoModal extends Component {
         	<Modal
         		visible={this.props.modalMarker ? true : false}
         		transparent={true}
-
         	>
         		<View
         			{...this._panResponder.panHandlers}
