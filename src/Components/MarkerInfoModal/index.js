@@ -50,21 +50,17 @@ export default class MarkerInfoModal extends Component {
 			onPanResponderGrant: (evt, gestureState) => {
 				// The gesture has started. Show visual feedback so the user knows
 				// what is happening!
-				console.log("grant");
 				// gestureState.d{x,y} will be set to zero now
+				gestureState.dy = this.animateModal._value;
 			},
     		onPanResponderMove: (evt, gestureState) => {
-    			console.log(gestureState.dy)
     			Animated.event([null, {dy: this.animateModal}])(evt, gestureState);
     		},
 			onPanResponderTerminationRequest: (evt, gestureState) => true,
 			onPanResponderRelease: (evt, gestureState) => {
-				console.log("release");
-				if(gestureState.dy > MAX_ANIM_VALUE / 3) {
-					console.log("closing");
+				if(gestureState.dy > MAX_ANIM_VALUE / 2) {
 					this.closeModal();
 				} else {
-					console.log("opening");
 					this.animateModalInitiate(0);
 				}
 				// The user has released all touches while this view is the
@@ -86,8 +82,8 @@ export default class MarkerInfoModal extends Component {
 	componentWillReceiveProps({modalMarker}) {
 		if(modalMarker && this.props.modalMarker !== modalMarker) {
 			this.animateModalInitiate(0);
-			this.imageInitialWidth = this.getPercentDifference(modalMarker.measure.height / modalMarker.measure.width);
-			this.imageInitialHeight = this.getPercentDifference(modalMarker.measure.width / modalMarker.measure.height);
+			this.imageInitialWidth = this.getPercentDifference(modalMarker.measure.width / modalMarker.measure.height);
+			this.imageInitialHeight = this.getPercentDifference(modalMarker.measure.height / modalMarker.measure.width);
 		}
 		if(!modalMarker) {
 			this.animateModal = new Animated.Value(MAX_ANIM_VALUE);
