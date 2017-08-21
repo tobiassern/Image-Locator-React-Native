@@ -29,7 +29,8 @@ export default class MarkerInfoModal extends Component {
 		this.imageInitialWidth = '100%';
 		this.imageInitialHeight = '100%';
 		this.state = {
-			touching: false
+			touching: false,
+			infoCardHeight: 0
 		}
 		this._setState = function(state) {
 			this.setState(state);
@@ -197,23 +198,31 @@ export default class MarkerInfoModal extends Component {
 						source={{uri: this.props.modalMarker.image}}
 					/>
 				</Animated.View>
-				<View
-					style={{
-						position: 'absolute',
-						height: 150,
-						width: deviceWidth - 20,
-						left: 10,
-						bottom: 0
-					}}
+				<Animated.View
+					style={[
+						styles.modalInfo,
+						{
+							bottom: this.animateModal.interpolate({
+								inputRange: [0, MAX_ANIM_VALUE / 2],
+								outputRange: [0, -this.state.infoCardHeight],
+								extrapolate: 'clamp'
+							})
+						}
+					]}
 				>
 					<View
-						style={styles.modalInfo}
+						style={styles.modalInfoInner}
+						onLayout={(event) => {
+							console.log(event.nativeEvent.layout);
+							this._setState({infoCardHeight: event.nativeEvent.layout.height})
+							console.log(this.infoCardHeight);
+						}}
 					>
-						<Text>
-							{translate('Date')}: {this.props.modalMarker.exif.DateTimeOriginal}
+						<Text style={styles.modalInfoInnerText}>
+							<Text style={styles.modalInfInnerTextBold}>{translate('Date')}:</Text> {this.props.modalMarker.exif.DateTimeOriginal}
 						</Text>
 					</View>
-				</View>
+				</Animated.View>
 			</Animated.View>
 		);
 	}
@@ -228,7 +237,7 @@ export default class MarkerInfoModal extends Component {
         			{...this._panResponder.panHandlers}
         			style={{flex: 1}}
         		>
-        		{this.props.modalMarker && this.renderInnerModal()}
+    			{this.props.modalMarker && this.renderInnerModal()}
         		</View>
         	</Modal>
         );
@@ -237,9 +246,21 @@ export default class MarkerInfoModal extends Component {
 
 const styles = StyleSheet.create({
 	modalInfo: {
+		position: 'absolute',
+		paddingHorizontal: 10,
+		width: '100%'
+	},
+	modalInfoInner: {
 		backgroundColor: '#ffffff',
 		padding: 20,
 		borderTopLeftRadius: 5,
 		borderTopRightRadius: 5
+	},
+	modalInfoInnerText: {
+		color: '#222222'
+	},
+	modalInfInnerTextBold: {
+		fontWeight: 'bold',
+		color: '#222222'
 	}
 });
