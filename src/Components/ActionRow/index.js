@@ -31,6 +31,8 @@ export default class ActionRow extends PureComponent {
                             longitude: result.exif.GPSLongitude,
                             latitude: result.exif.GPSLatitude,
                         },
+                        width: result.width,
+                        height: result.height,
                         image: result.uri,
                         exif: result.exif
                     }

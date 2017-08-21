@@ -81,9 +81,9 @@ export default class MarkerInfoModal extends Component {
 
 	componentWillReceiveProps({modalMarker}) {
 		if(modalMarker && this.props.modalMarker !== modalMarker) {
+			this.imageInitialHeight = this.getPercentDifference(modalMarker.height / modalMarker.width);
+			this.imageInitialWidth = this.getPercentDifference(modalMarker.width / modalMarker.height);
 			this.animateModalInitiate(1);
-			this.imageInitialWidth = this.getPercentDifference(modalMarker.measure.height / modalMarker.measure.width);
-			this.imageInitialHeight = this.getPercentDifference(modalMarker.measure.width / modalMarker.measure.height);
 		}
 		if(!modalMarker) {
 			this.animateModal = new Animated.Value(MAX_ANIM_VALUE);
@@ -96,10 +96,8 @@ export default class MarkerInfoModal extends Component {
 
 	getPercentDifference(diff) {
 		if(diff > 1) {
-			console.log(`${diff*100}%`);
 			return `${diff*100}%`
 		} else {
-			console.log('100%');
 			return '100%';
 		}
 	}
